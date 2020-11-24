@@ -1,0 +1,22 @@
+name: build release
+description: build all release components
+on:
+  release:
+    types: [created]
+
+input:
+  dim_version:
+    description: Set the dim version number for the release.
+  dimclient_version:
+    description: Set the dimclient version number for the release.
+  ndcli_version:
+    description: Set the ndcli version number for the release.
+
+jobs:
+  build_source:
+    runs-on: ubuntu-latest
+    name: build source packages
+    steps:
+      - run: tar --transform='s,^dim/,dim-${{ dim_version }}/,' -czf dim-${{ dim_version }}.tar.gz dim
+      - run: tar --transform='s,^ndcli/,ndcli-${{ ndcli_version }}/,' -czf ndcli-${{ ndcli_version }}.tar.gz ndcli
+      - run: tar --transform='s,^dimclient/,dimclient-${{ dimclient_version }}/,' -czf dimclient-${{ dimclient_version }}.tar.gz dimclient
