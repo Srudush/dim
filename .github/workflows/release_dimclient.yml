@@ -4,8 +4,6 @@ name: release_dimclient
 
 on:
   push:
-    branches:
-      - 'master'
     tags:
       - 'dimclient-*'
 
