@@ -20,7 +20,7 @@ jobs:
         env:
           _REF: ${{ github.ref }}
       - uses: actions/checkout@v2
-      - run: tar --transform="s,^dimclient/,dimclient-${dimclient_version}/," -czf "dimclient-src-${_version}.tar.gz" dimclient
+      - run: tar --transform="s,^dimclient/,dimclient-${_version}/," -czf "dimclient-src-${_version}.tar.gz" dimclient
         env:
           _version: ${{ steps.version.outputs.version }}
       - uses: actions/upload-artifact@v2
