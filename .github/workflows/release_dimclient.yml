@@ -1,0 +1,28 @@
+# This release process looks for dimclient tags and produces releases
+# build on the version number.
+name: release_dimclient
+
+on:
+  push:
+    branches:
+      - 'master'
+    tags:
+      - 'dimclient-*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: echo "::set-output name=version::$(echo "$_REF" | cut -d'-' -f2-)"
+        id: version
+        env:
+          _REF: ${{ github.ref }}
+      - uses: actions/checkout@v2
+      - run: tar --transform="s,^dimclient/,dimclient-${dimclient_version}/," -czf "dimclient-src-${_version}.tar.gz" dimclient
+        env:
+          _version: ${{ steps.version.outputs.version }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: dimclient-src-${{ steps.version.outputs.version }}.tar.gz
+          path: dimclient-src-${{ steps.version.outputs.version }}.tar.gz
