@@ -16,6 +16,7 @@ jobs:
     steps:
       - run: echo "::set-output name=version::$(echo "$_REF" | cut -d'-' -f2-)"
         id: version
+        shell: bash
         env:
           _REF: ${{ github.ref }}
       - uses: actions/checkout@v2
