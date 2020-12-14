@@ -23,6 +23,7 @@ jobs:
         shell: bash
         env:
           _REF: ${{ github.ref }}
+      - run: apt-get update
       - run: apt-get install --yes npm
       - run: npm run build --report
         working-directory: dim-web
