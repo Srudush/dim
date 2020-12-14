@@ -1,0 +1,36 @@
+# This release process looks for dim-web tags and produces releases
+# build on the version number.
+name: release_dim-web
+
+on:
+  push:
+    tags:
+      - 'dim-web-*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    container:
+      image: debian:10
+      env:
+        _VERSION: ${{ needs.build.outputs.version }}
+
+    steps:
+      - run: echo "::set-output name=version::$(echo "$_REF" | cut -d'-' -f2-)"
+        id: version
+        shell: bash
+        env:
+          _REF: ${{ github.ref }}
+      - run: apt-get install --yes npm
+      - run: npm run build --report
+        working-directory: dim-web
+      - uses: actions/checkout@v2
+      - run: tar --transform="s,^dim-web/,dim-web-${_version}/," -czf "dim-web-src-${_version}.tar.gz" dim-web
+        env:
+          _version: ${{ steps.version.outputs.version }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: dim-web-src-${{ steps.version.outputs.version }}.tar.gz
+          path: dim-web-src-${{ steps.version.outputs.version }}.tar.gz
