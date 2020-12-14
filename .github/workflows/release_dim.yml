@@ -6,6 +6,8 @@ on:
   push:
     tags:
       - 'dim-*'
+    tags_ignore:
+      - 'dim-web-*'
 
 jobs:
   build:
