@@ -25,10 +25,10 @@ jobs:
           _REF: ${{ github.ref }}
       - run: apt-get update
       - run: apt-get install --yes npm
+      - uses: actions/checkout@v2
       - run: ls -l
       - run: npm run build --report
         working-directory: dim-web
-      - uses: actions/checkout@v2
       - run: tar --transform="s,^dim-web/,dim-web-${_version}/," -czf "dim-web-src-${_version}.tar.gz" dim-web
         env:
           _version: ${{ steps.version.outputs.version }}
