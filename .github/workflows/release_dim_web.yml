@@ -30,7 +30,7 @@ jobs:
         working-directory: dim-web
       - run: npm build --report
         working-directory: dim-web
-      - run: ls -l
+      - run: ls -l build
         working-directory: dim-web
       - run: tar --transform="s,^dim-web/,dim-web-${_version}/," -czvf "dim-web-src-${_version}.tar.gz" dim-web
         env:
