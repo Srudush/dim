@@ -30,9 +30,9 @@ jobs:
         working-directory: dim-web
       - run: npm run build
         working-directory: dim-web
-      - run: cat dist/index.html
+      - run: ls dist/**
         working-directory: dim-web
-      - run: tar --transform="s,^dim-web/,dim-web-${_version}/," -czvf "dim-web-src-${_version}.tar.gz" dim-web
+      - run: tar --transform="s,^dim-web/dist/,dim-web-${_version}/," -czvf "dim-web-src-${_version}.tar.gz" dim-web/dist
         env:
           _version: ${{ steps.version.outputs.version }}
       - uses: actions/upload-artifact@v2
