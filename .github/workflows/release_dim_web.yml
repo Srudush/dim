@@ -28,7 +28,7 @@ jobs:
       - uses: actions/checkout@v2
       - run: npm install
         working-directory: dim-web
-      - run: npm build --report
+      - run: npm run build --report
         working-directory: dim-web
       - run: ls -l build
         working-directory: dim-web
