@@ -27,6 +27,8 @@ jobs:
       - run: apt-get install --yes npm
       - uses: actions/checkout@v2
       - run: ls -l
+      - run: npm install
+        working-directory: dim-web
       - run: npm run build --report
         working-directory: dim-web
       - run: tar --transform="s,^dim-web/,dim-web-${_version}/," -czf "dim-web-src-${_version}.tar.gz" dim-web
