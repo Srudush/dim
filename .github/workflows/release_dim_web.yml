@@ -54,7 +54,7 @@ jobs:
       - run: mkdir -p ${HOME}/rpmbuild/SPECS
       - run: mkdir -p ${HOME}/rpmbuild/SOURCES
       - run: /bin/dnf install --assumeyes epel-release
-      - run: /bin/dnf install --assumeyes python3-devel python3 rpm-build python3-Flask
+      - run: /bin/dnf install --assumeyes python3-devel python3 rpm-build python3-flask
       - uses: actions/download-artifact@v2
         with:
           name: dim-web-src-${{ needs.build.outputs.version }}.tar.gz
@@ -72,8 +72,8 @@ jobs:
 
           Source0: dim-web-src-%{version}.tar.gz
           BuildRequires: python3-devel
-          BuildRequires: python3-Flask
-          Requires: python3-Flask
+          BuildRequires: python3-flask
+          Requires: python3-flask
           Requires: python3
 
           # don't strip debug symbols, else it will all come crashing down
