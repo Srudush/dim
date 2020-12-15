@@ -118,7 +118,6 @@ jobs:
       - run: apt-get update
       - run: apt-get install --yes build-essential python3 python3-flask python3-sqlalchemy dh-python debhelper devscripts
       - run: cp -vr packaging/debian/dim-web/* dim-web-${{ needs.build.outputs.version }}/
-        working-directory: dim-web-${{ needs.build.outputs.version }}
       - run: dch --create --package dim-web --newversion ${{ needs.build.outputs.version }} --distribution unstable 'release update'
         working-directory: dim-web-${{ needs.build.outputs.version }}
         env:
