@@ -18,7 +18,7 @@ jobs:
         _VERSION: ${{ needs.build.outputs.version }}
 
     steps:
-      - run: echo "::set-output name=version::$(echo "$_REF" | cut -d'-' -f2-)"
+      - run: echo "::set-output name=version::$(echo "$_REF" | cut -d'-' -f3-)"
         id: version
         shell: bash
         env:
