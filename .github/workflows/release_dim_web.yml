@@ -112,7 +112,6 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: dim-web-src-${{ needs.build.outputs.version }}.tar.gz
-          path: dim-web-src-${{ needs.build.outputs.version }}.tar.gz
       - run: tar -xzf dim-web-src-${{ needs.build.outputs.version }}.tar.gz
       - run: apt-get update
       - run: apt-get install --yes build-essential python3 python3-flask python3-sqlalchemy dh-python debhelper devscripts
