@@ -54,7 +54,7 @@ jobs:
       - run: mkdir -p ${HOME}/rpmbuild/SPECS
       - run: mkdir -p ${HOME}/rpmbuild/SOURCES
       - run: /bin/dnf install --assumeyes epel-release
-      - run: /bin/dnf install --assumeyes python3-devel python3 rpm-build python3-dns python3-simplejson
+      - run: /bin/dnf install --assumeyes python3-devel python3 rpm-build python3-Flask
       - uses: actions/download-artifact@v2
         with:
           name: dim-web-src-${{ needs.build.outputs.version }}.tar.gz
