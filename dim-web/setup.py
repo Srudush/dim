@@ -1,12 +1,13 @@
 from setuptools import setup
+from cas import version
 
 setup(name='cas',
       packages=['cas'],
       data_files=[
-          {'share/dim-web', ['dist/index.html']},
-          {'share/dim-web/css', ['dist/css']},
-          {'share/dim-web/js', ['dist/js']},
-          {'share/dim-web/images', ['dist/images']},
-          {'share/dim-web/font-awesome-4.7.0', ['dist/font-awesome-4.7.0']},
+          {'share/dim-web', ['www/index.html']},
+          {'share/dim-web/css', ['www/css']},
+          {'share/dim-web/js', ['www/js']},
+          {'share/dim-web/images', ['www/images']},
+          {'share/dim-web/font-awesome-4.7.0', ['www/font-awesome-4.7.0']},
           ],
-      version='0.1')
+      version=version.VERSION)
