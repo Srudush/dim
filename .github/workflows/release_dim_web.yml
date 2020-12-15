@@ -30,7 +30,7 @@ jobs:
         working-directory: dim-web
       - run: npm run build
         working-directory: dim-web
-      - run: mw dist www
+      - run: mv dist www
         working-directory: dim-web
       - run: ls www/**
         working-directory: dim-web
