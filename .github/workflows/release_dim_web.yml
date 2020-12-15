@@ -109,13 +109,14 @@ jobs:
       env:
         _VERSION: ${{ needs.build.outputs.version }}
     steps:
+      - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
         with:
           name: dim-web-src-${{ needs.build.outputs.version }}.tar.gz
       - run: tar -xzf dim-web-src-${{ needs.build.outputs.version }}.tar.gz
       - run: apt-get update
       - run: apt-get install --yes build-essential python3 python3-flask python3-sqlalchemy dh-python debhelper devscripts
-      - run: cp -vr packaging/debian/dim-web/* dim-web/
+      - run: cp -vr packaging/debian/dim-web/* dim-web-${{ needs.build.outputs.version }}/
         working-directory: dim-web-${{ needs.build.outputs.version }}
       - run: dch --create --package dim-web --newversion ${{ needs.build.outputs.version }} --distribution unstable 'release update'
         working-directory: dim-web-${{ needs.build.outputs.version }}
