@@ -93,7 +93,7 @@ jobs:
 
           %files
           %{python3_sitelib}/*
-          %{datadir}/*
+          %{_datadir}/*
           EOF
       - run: rpmbuild -ba ${HOME}/rpmbuild/SPECS/dim-web.spec
       - uses: actions/upload-artifact@v2
@@ -114,6 +114,7 @@ jobs:
         with:
           name: dim-web-src-${{ needs.build.outputs.version }}.tar.gz
       - run: tar -xzf dim-web-src-${{ needs.build.outputs.version }}.tar.gz
+      - run: ls -la
       - run: apt-get update
       - run: apt-get install --yes build-essential python3 python3-flask python3-sqlalchemy dh-python debhelper devscripts
       - run: cp -vr packaging/debian/dim-web/* dim-web-${{ needs.build.outputs.version }}/
