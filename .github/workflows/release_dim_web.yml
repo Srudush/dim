@@ -125,7 +125,6 @@ jobs:
       - run: dpkg-buildpackage -us -uc -b
         working-directory: dim-web-${{ steps.version.outputs.version }}
       - uses: actions/upload-artifact@v2
-        working-directory: dim-web-${{ steps.version.outputs.version }}
         with:
           name: python3-dim-web_${{ needs.build.outputs.version }}_all.deb
           path: python3-dim-web_${{ needs.build.outputs.version }}_all.deb
