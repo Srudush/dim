@@ -23,6 +23,9 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - run: apt-get install --yes python-dnspython sphinx make
+      - run: make man
+        working-directory: ndcli/doc
       - run: tar --transform="s,^ndcli/,ndcli-${_version}/," -czf "ndcli-src-${_version}.tar.gz" ndcli
         env:
           _version: ${{ steps.version.outputs.version }}
@@ -93,11 +96,14 @@ jobs:
           %py3_install
           mkdir -p %{buildroot}%{_sysconfdir}/bash_completion.d
           install -m 644 -T bash_completion.d/ndcli %{buildroot}%{_sysconfdir}/bash_completion.d/ndcli
+          gzip doc/_build/ndcli.1
+          install -m 644 -T doc/_build/ndcli.1.gz %{buildroot}%{_mandir}/man1/ndcli.1.gz
 
           %files
           %{python3_sitelib}/*
           %{_bindir}/*
           %{_sysconfdir}/bash_completion.d/*
+          %{_mandir}/man1/*
           EOF
       - run: rpmbuild -ba ${HOME}/rpmbuild/SPECS/ndcli.spec
       - uses: actions/upload-artifact@v2
