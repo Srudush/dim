@@ -10,9 +10,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: ubuntu:latest
     outputs:
       version: ${{ steps.version.outputs.version }}
       dimclient: ${{ steps.dimclient.outputs.version }}
+    env:
+      DEBIAN_FRONTEND: noninteractive
 
     steps:
       - run: echo "::set-output name=version::$(echo "$_REF" | cut -d'-' -f2-)"
@@ -20,12 +24,15 @@ jobs:
         shell: bash
         env:
           _REF: ${{ github.ref }}
+      - run: apt-get update
+      - run: apt-get install --yes python3-dnspython python3-sphinx make git
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - run: apt-get install --yes python-dnspython sphinx make
-      - run: make man
+      - run: python3 gendoc.py > gendoc.txt
         working-directory: ndcli/doc
+      - run: sphinx-build -b man doc doc/_build/man
+        working-directory: ndcli
       - run: tar --transform="s,^ndcli/,ndcli-${_version}/," -czf "ndcli-src-${_version}.tar.gz" ndcli
         env:
           _version: ${{ steps.version.outputs.version }}
@@ -37,11 +44,14 @@ jobs:
         id: dimclient
         shell: bash
 
-  centos:
+  fedora:
     runs-on: ubuntu-latest
     needs: build
+    strategy:
+      matrix:
+        os: [32,latest]
     container:
-      image: centos:centos8
+      image: fedora:${{ matrix.os }}
       env:
         _VERSION: ${{ needs.build.outputs.version }}
         _DIMCLIENT: ${{ needs.build.outputs.dimclient }}
@@ -64,7 +74,7 @@ jobs:
           cat <<EOF > ${HOME}/rpmbuild/SPECS/ndcli.spec
           Name:    python3-ndcli
           Version: ${_VERSION}
-          Release: 1
+          Release: 1.fedora${{ matrix.os }}
           Summary: DNS and IP management
 
           Group: application/system
@@ -96,8 +106,9 @@ jobs:
           %py3_install
           mkdir -p %{buildroot}%{_sysconfdir}/bash_completion.d
           install -m 644 -T bash_completion.d/ndcli %{buildroot}%{_sysconfdir}/bash_completion.d/ndcli
-          gzip doc/_build/ndcli.1
-          install -m 644 -T doc/_build/ndcli.1.gz %{buildroot}%{_mandir}/man1/ndcli.1.gz
+          mkdir -p %{buildroot}%{_mandir}/man1
+          gzip doc/_build/man/ndcli.1
+          install -m 644 -T doc/_build/man/ndcli.1.gz %{buildroot}%{_mandir}/man1/ndcli.1.gz
 
           %files
           %{python3_sitelib}/*
@@ -108,8 +119,83 @@ jobs:
       - run: rpmbuild -ba ${HOME}/rpmbuild/SPECS/ndcli.spec
       - uses: actions/upload-artifact@v2
         with:
-          name: python3-ndcli-${{ needs.build.outputs.version }}-1.x86_64.rpm
-          path: ~/rpmbuild/RPMS/x86_64/python3-ndcli-${{ needs.build.outputs.version }}-1.x86_64.rpm
+          name: python3-ndcli-${{ needs.build.outputs.version }}-1.fedora${{ matrix.os }}.x86_64.rpm
+          path: ~/rpmbuild/RPMS/x86_64/python3-ndcli-${{ needs.build.outputs.version }}-1.fedora${{ matrix.os }}.x86_64.rpm
+
+  centos:
+    runs-on: ubuntu-latest
+    needs: build
+    container:
+      image: centos:centos8
+      env:
+        _VERSION: ${{ needs.build.outputs.version }}
+        _DIMCLIENT: ${{ needs.build.outputs.dimclient }}
+    steps:
+      - uses: actions/checkout@v2
+      - run: mkdir -p ${HOME}/rpmbuild/SPECS
+      - run: mkdir -p ${HOME}/rpmbuild/SOURCES
+      - run: /bin/dnf install --assumeyes epel-release
+      - run: /bin/dnf install --assumeyes python3-devel python3 rpm-build python3-dns python3-simplejson
+      - run: |
+          curl --location "https://github.com/${{ github.repository }}/releases/download/dimclient-${_DIMCLIENT}/python3-dimclient-${_DIMCLIENT}-1.x86_64.rpm" > ./python3-dimclient-${_DIMCLIENT}-1.x86_64.rpm
+          rpm -i ./python3-dimclient-${_DIMCLIENT}-1.x86_64.rpm
+        shell: sh
+      - uses: actions/download-artifact@v2
+        with:
+          name: ndcli-src-${{ needs.build.outputs.version }}.tar.gz
+          path: ~/rpmbuild/SOURCES/
+      - shell: sh
+        run: |
+          cat <<EOF > ${HOME}/rpmbuild/SPECS/ndcli.spec
+          Name:    python3-ndcli
+          Version: ${_VERSION}
+          Release: 1.el8
+          Summary: DNS and IP management
+
+          Group: application/system
+          License: MIT
+
+          Source0: ndcli-src-%{version}.tar.gz
+          BuildRequires: python3-devel
+          BuildRequires: python3-dimclient
+          BuildRequires: python3-dns
+          Requires: python3-dimclient
+          Requires: python3-dns
+          Requires: python3
+          Requires: bash
+
+          # don't strip debug symbols, else it will all come crashing down
+          %define debug_package %{nil}
+          %define __strip /bin/true
+
+          %description
+          DNS and IP management
+
+          %prep
+          %autosetup -p1 -n ndcli-%{version}
+
+          %build
+          %py3_build
+
+          %install
+          %py3_install
+          mkdir -p %{buildroot}%{_sysconfdir}/bash_completion.d
+          install -m 644 -T bash_completion.d/ndcli %{buildroot}%{_sysconfdir}/bash_completion.d/ndcli
+          mkdir -p %{buildroot}%{_mandir}/man1
+          gzip doc/_build/man/ndcli.1
+          install -m 644 -T doc/_build/man/ndcli.1.gz %{buildroot}%{_mandir}/man1/ndcli.1.gz
+
+          %files
+          %{python3_sitelib}/*
+          %{_bindir}/*
+          %{_sysconfdir}/bash_completion.d/*
+          %{_mandir}/man1/*
+          EOF
+      - run: rpmbuild -ba ${HOME}/rpmbuild/SPECS/ndcli.spec
+      - uses: actions/upload-artifact@v2
+        with:
+          name: python3-ndcli-${{ needs.build.outputs.version }}-1.el8.x86_64.rpm
+          path: ~/rpmbuild/RPMS/x86_64/python3-ndcli-${{ needs.build.outputs.version }}-1.el8.x86_64.rpm
 
   debian:
     runs-on: ubuntu-latest
