@@ -74,6 +74,7 @@ jobs:
           Requires: python3-dimclient
           Requires: python3-dns
           Requires: python3
+          Requires: bash
 
           # don't strip debug symbols, else it will all come crashing down
           %define debug_package %{nil}
@@ -90,10 +91,13 @@ jobs:
 
           %install
           %py3_install
+          mkdir -p %{buildroot}%{_sysconfdir}/bash_completion.d
+          install -m 644 -T bash_completion.d/ndcli %{buildroot}%{_sysconfdir}/bash_completion.d/ndcli
 
           %files
           %{python3_sitelib}/*
           %{_bindir}/*
+          %{_sysconfdir}/bash_completion.d/*
           EOF
       - run: rpmbuild -ba ${HOME}/rpmbuild/SPECS/ndcli.spec
       - uses: actions/upload-artifact@v2
