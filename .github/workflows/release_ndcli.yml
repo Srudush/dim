@@ -230,6 +230,7 @@ jobs:
       - build
       - debian
       - centos
+      - fedora
     steps:
       - uses: actions/checkout@v2
       - uses: actions/create-release@v1
