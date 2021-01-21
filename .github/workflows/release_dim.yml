@@ -60,7 +60,6 @@ jobs:
       - run: cp -r /tmp/dim-${{ needs.build.outputs.version }}/doc/_build/html/* /opt/dim/doc/
       - run: /bin/tar --transform="s,^opt,dim-${_VERSION}/opt," -czf "/tmp/dim-bin.tar.gz" opt
         working-directory: /
-      - run: pwd
       - run: mkdir -p ${HOME}/rpmbuild/SPECS
       - run: mkdir -p ${HOME}/rpmbuild/SOURCES
       - shell: sh
@@ -122,7 +121,6 @@ jobs:
       - run: cp -r /tmp/dim-${{ needs.build.outputs.version }}/doc/_build/html/* /opt/dim/doc/
       - run: /bin/tar --transform="s,^opt,dim-${_VERSION}/opt," -czf "/tmp/dim-bin.tar.gz" opt
         working-directory: /
-      - run: pwd
       - run: mkdir -p ${HOME}/rpmbuild/SPECS
       - run: mkdir -p ${HOME}/rpmbuild/SOURCES
       - shell: sh
