@@ -174,7 +174,7 @@ jobs:
 
           %install
           %py3_install
-					mkdir -p %{buildroot}%{_sysconfdir}/bash_completion.d
+          mkdir -p %{buildroot}%{_sysconfdir}/bash_completion.d
           install -m 644 -T bash_completion.d/ndcli %{buildroot}%{_sysconfdir}/bash_completion.d/ndcli
           mkdir -p %{buildroot}%{_mandir}/man1
           gzip doc/_build/man/ndcli.1
