@@ -49,7 +49,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: dim-src-${{ needs.build.outputs.version }}.tar.gz
-          dest: /tmp/dim-src-${{ needs.build.outputs.version }}.tar.gz
+          path: /tmp/dim-src-${{ needs.build.outputs.version }}.tar.gz
       - run: tar -xzf dim-src-${{ needs.build.outputs.version }}.tar.gz
         working-directory: /tmp
       - uses: actions/checkout@v2
@@ -112,7 +112,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: dim-src-${{ needs.build.outputs.version }}.tar.gz
-          dest: /tmp/dim-src-${{ needs.build.outputs.version }}.tar.gz
+          path: /tmp/dim-src-${{ needs.build.outputs.version }}.tar.gz
       - run: tar -xzf dim-src-${{ needs.build.outputs.version }}.tar.gz
         working-directory: /tmp
       - uses: actions/checkout@v2
