@@ -10,8 +10,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: ubuntu:latest
     outputs:
       version: ${{ steps.version.outputs.version }}
+    env:
+      DEBIAN_FRONTEND: noninteractive
 
     steps:
       - run: echo "::set-output name=version::$(echo "$_REF" | cut -d'-' -f2-)"
@@ -19,7 +23,11 @@ jobs:
         shell: bash
         env:
           _REF: ${{ github.ref }}
+      - run: apt-get update
+      - run: apt-get install --yes python3-dnspython python3-sphinx make git
       - uses: actions/checkout@v2
+      - run: sphinx-build -b html doc doc/_build/html
+        working-directory: dim
       - run: tar --transform="s,^dim/,dim-${_version}/," -czf "dim-src-${_version}.tar.gz" dim
         env:
           _version: ${{ steps.version.outputs.version }}
@@ -73,6 +81,7 @@ jobs:
 
           %install
           cp -rfa * %{buildroot}
+          mkdir -p %{buildroot}/opt/dim/doc
 
           %files
           /opt/*
