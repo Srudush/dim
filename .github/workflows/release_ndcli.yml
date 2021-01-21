@@ -109,6 +109,8 @@ jobs:
           %files
           %{python3_sitelib}/*
           %{_bindir}/*
+          %{_sysconfdir}/bash_completion.d/*
+          %{_mandir}/man1/*
           EOF
       - run: rpmbuild -ba ${HOME}/rpmbuild/SPECS/ndcli.spec
       - uses: actions/upload-artifact@v2
@@ -183,6 +185,8 @@ jobs:
           %files
           %{python3_sitelib}/*
           %{_bindir}/*
+          %{_sysconfdir}/bash_completion.d/*
+          %{_mandir}/man1/*
           EOF
       - run: rpmbuild -ba ${HOME}/rpmbuild/SPECS/ndcli.spec
       - uses: actions/upload-artifact@v2
