@@ -114,6 +114,7 @@ jobs:
           name: dim-src-${{ needs.build.outputs.version }}.tar.gz
           dest: /tmp/dim-src-${{ needs.build.outputs.version }}.tar.gz
       - run: tar -xzf dim-src-${{ needs.build.outputs.version }}.tar.gz
+        working-directory: /tmp
       - uses: actions/checkout@v2
       - run: /bin/yum install --assumeyes openldap-devel gcc python36-devel mariadb-devel git python36 rpm-build
       - run: /bin/python3.6 -m venv /opt/dim/
