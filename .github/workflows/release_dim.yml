@@ -143,16 +143,17 @@ jobs:
           %define debug_package %{nil}
           %define __strip /bin/true
           # stop trying to compile python files with old python version
-          %__os_install_post    \
+          %if 0%{?rhel}
+          %global __os_install_post    \
               /usr/lib/rpm/redhat/brp-compress \
-              %{!?__debug_package:/usr/lib/rpm/redhat/brp-strip
-          %{__strip}} \
-              /usr/lib/rpm/redhat/brp-strip-static-archive
-          %{__strip} \
-              /usr/lib/rpm/redhat/brp-strip-comment-note
-          %{__strip} %{__objdump} \
-              /usr/lib/rpm/redhat/brp-java-repack-jars \
+              %{!?__debug_package:\
+              /usr/lib/rpm/redhat/brp-strip %{__strip} \
+              /usr/lib/rpm/redhat/brp-strip-comment-note %{__strip} %{__objdump} \
+              } \
+              /usr/lib/rpm/redhat/brp-strip-static-archive %{__strip} \
+              %{!?__jar_repack:/usr/lib/rpm/redhat/brp-java-repack-jars} \
           %{nil}
+          %endif
 
           %description
           DNS and IP management
