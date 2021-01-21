@@ -8,7 +8,7 @@ on:
       - 'ndcli-*'
 
 jobs:
-	build:
+  build:
     runs-on: ubuntu-latest
     container:
       image: ubuntu:latest
