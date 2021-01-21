@@ -84,6 +84,7 @@ jobs:
           %install
           cp -rfa * %{buildroot}
           mkdir -p %{buildroot}/opt/dim/doc
+          cp -r doc/_build/html/* %{buildroot}/opt/dim/doc/
 
           %files
           /opt/*
@@ -140,6 +141,8 @@ jobs:
 
           %install
           cp -rfa * %{buildroot}
+          mkdir -p %{buildroot}/opt/dim/doc
+          cp -r doc/_build/html/* %{buildroot}/opt/dim/doc/
 
           %files
           /opt/*
